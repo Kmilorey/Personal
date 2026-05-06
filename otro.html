@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Una velada para Laura</title>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600&family=Jost:ital,wght@0,200;0,300;0,400;1,200;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --cream: #faf6f0;
+  --dark: #1a0f0a;
+  --burg: #5c1a28;
+  --burg-light: #8b3a4a;
+  --rose: #c4756a;
+  --rose-pale: #f0d8d4;
+  --gold: #b8945a;
+  --gold-light: #d4b07a;
+  --text: #2c1810;
+  --text-soft: rgba(44,24,16,0.5);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--dark); font-family: 'Jost', sans-serif; overflow-x: hidden; min-height: 100vh; cursor: none; }
+
+#cur { position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+#petals { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+#bg-layer { position: fixed; inset: -20px; background: radial-gradient(ellipse 60% 40% at 20% 30%, rgba(92,26,40,0.25) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 80% 70%, rgba(184,148,90,0.12) 0%, transparent 60%), var(--dark); pointer-events: none; z-index: 0; }
+
+/* ── ENVELOPE SCREEN ── */
+#env-screen {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 3000; background: var(--dark);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.env-pre { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 5px; color: var(--gold); margin-bottom: 40px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.3s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Envelope — single SVG approach, no misalignment */
+.env-outer { cursor: pointer; opacity: 0; animation: fadeUp 0.8s ease forwards 0.7s; }
+
+.env-svg-wrap {
+  position: relative;
+  width: 300px;
+  height: 200px;
+}
+
+/* Body layer */
+.env-body-layer { position: absolute; top: 0; left: 0; width: 300px; height: 200px; }
+
+/* Flap layer — overlaps top half, rotates from top edge */
+.env-flap-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 300px;
+  height: 112px; /* exactly the triangle height */
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.4,0,0.2,1);
+}
+.env-flap-layer.open { transform: perspective(800px) rotateX(-175deg); }
+
+/* Hover preview */
+.env-outer:hover .env-flap-layer:not(.open) {
+  transform: perspective(800px) rotateX(-20deg);
+}
+
+.env-hint { margin-top: 28px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: rgba(184,148,90,0.7); text-align: center; opacity: 0; animation: fadeUp 0.8s ease forwards 1.3s; }
+.hint-arrow { display: flex; justify-content: center; margin-top: 10px; opacity: 0; animation: bounce 1.5s ease-in-out infinite, fadeIn 0.5s ease forwards 1.8s; }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+/* ── MAIN CARD ── */
+#card { position: relative; z-index: 10; max-width: 480px; margin: 0 auto; padding-bottom: 80px; display: none; opacity: 0; transform: translateY(30px); transition: opacity 0.9s ease, transform 0.9s ease; }
+#card.show { opacity: 1; transform: translateY(0); }
+
+.paper { background: var(--cream); margin: 0 14px; border-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 10px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(184,148,90,0.18); overflow: hidden; position: relative; }
+.paper::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+
+.card-top { padding: 28px 28px 0; text-align: center; }
+.ornament-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.orn-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold)); }
+.orn-line.rev { background: linear-gradient(to left, transparent, var(--gold)); }
+.orn-diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+.card-supertag { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px; color: var(--gold); }
+
+/* HERO */
+.card-hero { padding: 36px 32px 28px; text-align: center; position: relative; z-index: 1; color: var(--text); border-bottom: 1px solid rgba(184,148,90,0.18); }
+.hero-eyebrow { font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: 6px; color: var(--rose); margin-bottom: 10px; }
+.hero-name { font-family: 'Alex Brush', cursive; font-size: 96px; color: var(--burg); line-height: 0.95; margin-bottom: 8px; }
+.hero-years { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 5px; color: var(--gold); margin-bottom: 32px; }
+
+/* Hero illustration — wine glasses toasting */
+.hero-illustration { display: flex; justify-content: center; align-items: flex-end; gap: 0; }
+
+/* BODY */
+.card-body { padding: 32px 32px 24px; color: var(--text); position: relative; z-index: 1; }
+.section-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 4px; color: var(--gold); margin-bottom: 16px; display: block; }
+.invitation-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; line-height: 2; color: var(--text); margin-bottom: 28px; }
+.invitation-text strong { color: var(--burg); font-weight: 400; }
+.invitation-text em { color: var(--rose); }
+
+.card-divider { display: flex; align-items: center; gap: 12px; margin: 0 0 24px; }
+.cdiv-line { flex: 1; height: 1px; background: rgba(184,148,90,0.22); }
+
+.details-list { display: flex; flex-direction: column; }
+.detail-row { display: flex; align-items: flex-start; gap: 18px; padding: 18px 0; border-bottom: 1px solid rgba(184,148,90,0.12); }
+.detail-row:last-child { border-bottom: none; }
+.detail-icon-wrap { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(184,148,90,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(184,148,90,0.05); }
+.d-label { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 3px; color: var(--gold); margin-bottom: 4px; }
+.d-value { font-family: 'Jost', sans-serif; font-size: 19px; font-weight: 300; color: var(--text); margin-bottom: 2px; }
+.d-hint { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--text-soft); }
+
+/* CALENDAR */
+.cal-block { margin: 28px 32px 0; padding: 22px 24px; background: var(--burg); border-radius: 2px; display: flex; align-items: center; gap: 18px; cursor: pointer; position: relative; z-index: 1; overflow: hidden; transition: background 0.3s ease; }
+.cal-block::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(196,117,106,0.2) 0%, transparent 70%); }
+.cal-block:hover { background: var(--burg-light); }
+.cal-title { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 3px; color: #f0e8dc; margin-bottom: 5px; }
+.cal-sub { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 200; color: rgba(240,232,220,0.6); letter-spacing: 1px; }
+.cal-arrow { margin-left: auto; color: var(--gold-light); flex-shrink: 0; }
+
+/* SECRET with PIN */
+.secret-section { margin: 22px 32px 0; border: 1px solid rgba(184,148,90,0.25); padding: 24px 22px; position: relative; z-index: 1; background: rgba(184,148,90,0.03); }
+.secret-section::before { content: 'MENSAJE SECRETO'; position: absolute; top: -9px; left: 16px; background: var(--cream); padding: 0 8px; font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 4px; color: var(--gold); }
+
+.secret-locked { text-align: center; }
+.secret-hint { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--text-soft); margin-bottom: 20px; }
+
+/* PIN input */
+.pin-area { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pin-dots { display: flex; gap: 12px; margin-bottom: 4px; }
+.pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(184,148,90,0.4); background: transparent; transition: background 0.2s, border-color 0.2s; }
+.pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+.pin-display { font-family: 'Cinzel', serif; font-size: 28px; letter-spacing: 12px; color: var(--text); min-height: 40px; text-align: center; }
+.pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 200px; }
+.pin-key { background: rgba(184,148,90,0.08); border: 1px solid rgba(184,148,90,0.2); color: var(--text); font-family: 'Cinzel', serif; font-size: 18px; padding: 12px; cursor: pointer; border-radius: 2px; transition: background 0.2s, transform 0.1s; user-select: none; }
+.pin-key:hover { background: rgba(184,148,90,0.18); }
+.pin-key:active { transform: scale(0.96); }
+.pin-key.del { font-size: 13px; letter-spacing: 1px; }
+.pin-error { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: #9b1c1c; min-height: 18px; text-align: center; }
+
+.secret-content { display: none; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 19px; line-height: 1.9; color: var(--text); text-align: center; }
+.secret-content.revealed { display: block; }
+
+/* COUNTDOWN */
+.countdown-block { margin: 22px 32px 0; padding: 26px; background: #0f0804; border: 1px solid rgba(184,148,90,0.2); text-align: center; position: relative; z-index: 1; overflow: hidden; }
+.countdown-block::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 220px; height: 220px; background: radial-gradient(circle, rgba(184,148,90,0.07) 0%, transparent 70%); pointer-events: none; }
+.cd-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 4px; color: var(--gold); margin-bottom: 16px; }
+.cd-numbers { display: flex; justify-content: center; gap: 4px; align-items: center; margin-bottom: 10px; }
+.cd-unit { text-align: center; }
+.cd-num { font-family: 'Cinzel', serif; font-size: 42px; font-weight: 600; color: var(--cream); line-height: 1; display: block; }
+.cd-sep { font-family: 'Cinzel', serif; font-size: 30px; color: var(--gold); opacity: 0.45; line-height: 1; padding-bottom: 16px; }
+.cd-unitlabel { font-family: 'Jost', sans-serif; font-size: 8px; font-weight: 300; letter-spacing: 3px; color: rgba(240,232,220,0.3); display: block; }
+.cd-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: rgba(184,148,90,0.6); }
+
+/* RSVP */
+.rsvp-section { padding: 28px 32px 30px; text-align: center; color: var(--text); position: relative; z-index: 1; border-top: 1px solid rgba(184,148,90,0.15); }
+.rsvp-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 5px; color: var(--gold); margin-bottom: 18px; }
+.rsvp-btn { width: 100%; background: transparent; border: 1px solid var(--rose); color: var(--burg); font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 4px; padding: 20px 32px; cursor: pointer; position: relative; overflow: hidden; transition: color 0.4s ease, border-color 0.4s ease; }
+.rsvp-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--burg) 0%, var(--burg-light) 100%); transform: scaleY(0); transform-origin: bottom; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); z-index: 0; }
+.rsvp-btn:hover::before { transform: scaleY(1); }
+.rsvp-btn:hover { color: var(--cream); border-color: var(--burg); }
+.rsvp-btn span { position: relative; z-index: 1; }
+.rsvp-btn.confirmed { background: var(--burg); color: var(--cream); border-color: var(--burg); }
+.rsvp-btn.confirmed::before { display: none; }
+
+/* QUOTE */
+.quote-block { padding: 0 32px 32px; color: var(--text); position: relative; z-index: 1; }
+.quote-text { font-family: 'Alex Brush', cursive; font-size: 32px; color: var(--burg); line-height: 1.5; padding-left: 18px; border-left: 2px solid var(--rose); margin-bottom: 10px; }
+.quote-from { font-family: 'Cinzel', serif; font-size: 8.5px; letter-spacing: 4px; color: var(--gold); padding-left: 20px; }
+
+.paper-footer { padding: 16px 32px 28px; display: flex; justify-content: space-between; border-top: 1px solid rgba(184,148,90,0.15); position: relative; z-index: 1; }
+.pf-col { font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 2px; color: var(--text-soft); line-height: 1.8; }
+
+.card-bottom { padding: 18px 28px 0; text-align: center; }
+.card-bottom-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 12px; color: rgba(240,232,220,0.28); letter-spacing: 2px; }
+
+/* CONFETTI */
+.confetti-piece { position: fixed; pointer-events: none; z-index: 8000; animation: confetti-fall 2s ease forwards; }
+@keyframes confetti-fall { 0% { transform: translateY(var(--sy)) translateX(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) translateX(var(--sx)) rotate(720deg); opacity: 0; } }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.r1{transition-delay:0.0s}.r2{transition-delay:0.08s}.r3{transition-delay:0.14s}.r4{transition-delay:0.2s}.r5{transition-delay:0.26s}.r6{transition-delay:0.32s}
+
+/* Wine glass animations */
+@keyframes glassShimmer { 0%,100%{opacity:0.15} 50%{opacity:0.35} }
+.shimmer { animation: glassShimmer 3s ease-in-out infinite; }
+@keyframes bubbleRise { 0%{transform:translateY(0);opacity:0.8} 100%{transform:translateY(-28px);opacity:0} }
+.bubble1{animation:bubbleRise 2.2s ease-in-out infinite 0s}
+.bubble2{animation:bubbleRise 2.2s ease-in-out infinite 0.7s}
+.bubble3{animation:bubbleRise 2.2s ease-in-out infinite 1.4s}
+@keyframes rosePetal { 0%,100%{transform:translateY(0) rotate(0deg);opacity:0.7} 50%{transform:translateY(-5px) rotate(8deg);opacity:1} }
+.petal-float { animation: rosePetal 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div id="cur">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M8 14 Q4 10 3 7 Q2 4 5 3 Q6.5 2.5 8 4.5 Q9.5 2.5 11 3 Q14 4 13 7 Q12 10 8 14Z" fill="#c4756a" opacity="0.85"/>
+    <path d="M8 14 Q6 10 5.5 7.5 Q7 6 8 7 Q9 6 10.5 7.5 Q11 10 8 14Z" fill="#e8b4ae" opacity="0.6"/>
+  </svg>
+</div>
+<canvas id="petals"></canvas>
+<div id="bg-layer"></div>
+
+<!-- ── ENVELOPE ── -->
+<div id="env-screen">
+  <div class="env-pre">Para ti, con todo mi amor</div>
+
+  <div class="env-outer" id="env-outer" onclick="openEnvelope()">
+    <div class="env-svg-wrap">
+
+      <!-- BODY: drawn as one SVG, perfectly sized -->
+      <svg class="env-body-layer" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Envelope back/body -->
+        <rect width="300" height="200" rx="4" fill="#ede3d5"/>
+        <!-- Left bottom triangle -->
+        <path d="M0 200 L150 105 L0 40 Z" fill="#e4d8c8"/>
+        <!-- Right bottom triangle -->
+        <path d="M300 200 L150 105 L300 40 Z" fill="#e8ddd0"/>
+        <!-- Bottom triangle -->
+        <path d="M0 200 L300 200 L150 105 Z" fill="#ddd0c0"/>
+        <!-- Wax seal -->
+        <circle cx="150" cy="148" r="28" fill="#5c1a28"/>
+        <circle cx="150" cy="148" r="22" fill="none" stroke="#b8945a" stroke-width="0.8" opacity="0.5"/>
+        <text x="150" y="145" text-anchor="middle" font-family="'Cinzel',serif" font-size="7" fill="#d4b07a" letter-spacing="1">L &amp; C</text>
+        <path d="M140 151 Q150 147 160 151" stroke="#d4b07a" stroke-width="0.9" fill="none"/>
+        <text x="150" y="161" text-anchor="middle" font-family="'Cinzel',serif" font-size="6" fill="#d4b07a" letter-spacing="1">MMXXVI</text>
+      </svg>
+
+      <!-- FLAP: separate layer, rotates from top -->
+      <div class="env-flap-layer" id="env-flap-layer">
+        <svg width="300" height="112" viewBox="0 0 300 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Triangle pointing down, top edge = top of envelope -->
+          <path d="M0 0 L300 0 L150 112 Z" fill="#d8ccbc"/>
+          <path d="M0 0 L150 112" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+          <path d="M300 0 L150 112" stroke="rgba(0,0,0,0.05)" stroke-width="1"/>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="env-hint">
+    Toca el sobre para abrirlo
+    <div class="hint-arrow">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 3 L9 15 M5 11 L9 15 L13 11" stroke="#b8945a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN CARD ── -->
+<div id="card">
+  <div class="card-top reveal r1">
+    <div class="ornament-top">
+      <div class="orn-line"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line rev"></div>
+    </div>
+    <div class="card-supertag">Una velada muy especial · Mayo 2026</div>
+  </div>
+
+  <div class="paper">
+    <div class="card-hero reveal r2">
+      <div class="hero-eyebrow">Para mi amor</div>
+      <div class="hero-name">Laura</div>
+      <div class="hero-years">✦ &nbsp; XXIX años &nbsp; ✦</div>
+
+      <!-- Hero: two wine glasses toasting with roses and sparkle -->
+      <div class="hero-illustration">
+        <svg width="280" height="130" viewBox="0 0 280 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Left wine glass -->
+          <path d="M90 20 Q75 50 72 70 Q70 82 80 88 L95 88" stroke="#b8945a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M130 20 Q145 50 148 70 Q150 82 140 88 L125 88" stroke="#b8945a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Glass bowl fill (wine) -->
+          <path d="M93 20 Q82 48 80 66 Q78 78 88 84 L132 84 Q142 78 140 66 Q138 48 127 20 Z" fill="#5c1a28" opacity="0.35"/>
+          <!-- Glass bowl outline -->
+          <path d="M93 20 Q82 48 80 66 Q78 78 88 84 L132 84 Q142 78 140 66 Q138 48 127 20 Z" stroke="#b8945a" stroke-width="1.2" fill="none"/>
+          <!-- Stem left glass -->
+          <line x1="110" y1="84" x2="110" y2="110" stroke="#b8945a" stroke-width="1.3" stroke-linecap="round"/>
+          <!-- Base left glass -->
+          <line x1="96" y1="110" x2="124" y2="110" stroke="#b8945a" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Bubbles left glass -->
+          <circle class="bubble1" cx="104" cy="68" r="2" fill="#b8945a" opacity="0.5"/>
+          <circle class="bubble2" cx="112" cy="58" r="1.5" fill="#b8945a" opacity="0.4"/>
+          <circle class="bubble3" cx="118" cy="72" r="1.8" fill="#b8945a" opacity="0.45"/>
+          <!-- Shimmer on glass -->
+          <path class="shimmer" d="M96 30 Q92 50 91 65" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.2"/>
+
+          <!-- Right wine glass -->
+          <path d="M150 20 Q165 50 168 70 Q170 82 160 88 L175 88" stroke="#b8945a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M190 20 Q175 50 172 70 Q170 82 160 88" stroke="#b8945a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M153 20 Q164 48 166 66 Q168 78 158 84 L192 84 Q202 78 200 66 Q198 48 187 20 Z" fill="#5c1a28" opacity="0.35"/>
+          <path d="M153 20 Q164 48 166 66 Q168 78 158 84 L202 84 Q212 78 210 66 Q208 48 197 20 Z" stroke="#b8945a" stroke-width="1.2" fill="none"/>
+          <line x1="180" y1="84" x2="180" y2="110" stroke="#b8945a" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="166" y1="110" x2="194" y2="110" stroke="#b8945a" stroke-width="1.5" stroke-linecap="round"/>
+          <circle class="bubble2" cx="174" cy="65" r="2" fill="#b8945a" opacity="0.5"/>
+          <circle class="bubble3" cx="182" cy="55" r="1.5" fill="#b8945a" opacity="0.4"/>
+          <circle class="bubble1" cx="188" cy="70" r="1.8" fill="#b8945a" opacity="0.45"/>
+          <path class="shimmer" d="M158 28 Q155 48 154 63" stroke="white" stroke-width="1" stroke-linecap="round" opacity="0.2"/>
+
+          <!-- Toast sparkle center-top -->
+          <path d="M140 14 L140 4" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M136 16 L129 10" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M144 16 L151 10" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="140" cy="17" r="2" fill="#b8945a" opacity="0.8"/>
+
+          <!-- Left rose -->
+          <circle cx="52" cy="88" r="11" fill="#c4756a" opacity="0.65"/>
+          <circle cx="44" cy="82" r="8" fill="#e8b4ae" opacity="0.55"/>
+          <circle cx="58" cy="82" r="7" fill="#b8505a" opacity="0.45"/>
+          <path d="M38 96 Q32 86 40 79" stroke="#7a9a6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M44 100 Q36 92 38 84" stroke="#7a9a6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Right rose -->
+          <circle cx="228" cy="88" r="11" fill="#c4756a" opacity="0.65"/>
+          <circle cx="236" cy="82" r="8" fill="#e8b4ae" opacity="0.55"/>
+          <circle cx="222" cy="82" r="7" fill="#b8505a" opacity="0.45"/>
+          <path d="M242 96 Q248 86 240 79" stroke="#7a9a6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M236 100 Q244 92 242 84" stroke="#7a9a6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+          <!-- Floating petals -->
+          <g class="petal-float">
+            <ellipse cx="68" cy="55" rx="4" ry="2.5" transform="rotate(30 68 55)" fill="#e8b4ae" opacity="0.5"/>
+          </g>
+          <g class="petal-float" style="animation-delay:1s">
+            <ellipse cx="212" cy="48" rx="4" ry="2.5" transform="rotate(-20 212 48)" fill="#e8b4ae" opacity="0.45"/>
+          </g>
+          <g class="petal-float" style="animation-delay:0.5s">
+            <ellipse cx="140" cy="125" rx="3.5" ry="2" transform="rotate(10 140 125)" fill="#c4756a" opacity="0.35"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card-body reveal r3">
+      <span class="section-label">La invitación</span>
+      <p class="invitation-text">
+        Amor,<br><br>
+        Tienes una cena reservada este sábado.<br>
+        Solo tienes que <strong>brillar</strong>.
+        <em>El resto corre por mi cuenta.</em>
+      </p>
+
+      <div class="card-divider">
+        <div class="cdiv-line"></div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 12 Q4 9 3 6.5 Q2.5 4 4.5 3 Q5.5 2.5 7 4.2 Q8.5 2.5 9.5 3 Q11.5 4 11 6.5 Q10 9 7 12Z" fill="#c4756a"/></svg>
+        <div class="cdiv-line"></div>
+      </div>
+
+      <span class="section-label">Los detalles</span>
+      <div class="details-list">
+
+        <div class="detail-row">
+          <div class="detail-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="#b8945a" stroke-width="1.2"/><line x1="2" y1="7" x2="14" y2="7" stroke="#b8945a" stroke-width="1"/><line x1="5" y1="1.5" x2="5" y2="4.5" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="1.5" x2="11" y2="4.5" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="d-label">La fecha</div>
+            <div class="d-value">Sábado 9 de Mayo, 2026</div>
+            <div class="d-hint">Celebrando tus 29</div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#b8945a" stroke-width="1.2"/><line x1="8" y1="5" x2="8" y2="8" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="8" x2="10.5" y2="10" stroke="#b8945a" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div class="d-label">La hora</div>
+            <div class="d-value">4:00 PM</div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-icon-wrap">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2 C5.5 2 3.5 4 3.5 6.5 C3.5 10 8 14 8 14 C8 14 12.5 10 12.5 6.5 C12.5 4 10.5 2 8 2Z" stroke="#b8945a" stroke-width="1.2" fill="none"/><circle cx="8" cy="6.5" r="1.8" stroke="#b8945a" stroke-width="1"/></svg>
+          </div>
+          <div>
+            <div class="d-label">El lugar</div>
+            <div class="d-value">Reservado</div>
+            <div class="d-hint">La noche empieza en tu puerta</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="cal-block reveal r4" onclick="downloadICS()">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect x="4" y="8" width="32" height="28" rx="4" fill="none" stroke="#d4b07a" stroke-width="1.5"/>
+        <line x1="4" y1="16" x2="36" y2="16" stroke="#d4b07a" stroke-width="1.2"/>
+        <line x1="13" y1="4" x2="13" y2="12" stroke="#d4b07a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="27" y1="4" x2="27" y2="12" stroke="#d4b07a" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="12" y="20" width="7" height="7" rx="1" fill="#d4b07a" opacity="0.6"/>
+        <rect x="21" y="20" width="7" height="7" rx="1" fill="#d4b07a" opacity="0.3"/>
+      </svg>
+      <div>
+        <div class="cal-title">Agregar al Calendario</div>
+        <div class="cal-sub">Sábado 9 · 4:00 PM</div>
+      </div>
+      <div class="cal-arrow">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10 L14 10 M10 6 L14 10 L10 14" stroke="#d4b07a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <!-- SECRET with PIN -->
+    <div class="secret-section reveal r4">
+      <div id="secret-locked">
+        <div class="secret-hint">Una sorpresa te espera detrás de esta puerta</div>
+        <div class="pin-area">
+          <div class="pin-dots">
+            <div class="pin-dot" id="dot-0"></div>
+            <div class="pin-dot" id="dot-1"></div>
+            <div class="pin-dot" id="dot-2"></div>
+            <div class="pin-dot" id="dot-3"></div>
+          </div>
+          <div class="pin-keypad">
+            <button class="pin-key" onclick="pinPress('1')">1</button>
+            <button class="pin-key" onclick="pinPress('2')">2</button>
+            <button class="pin-key" onclick="pinPress('3')">3</button>
+            <button class="pin-key" onclick="pinPress('4')">4</button>
+            <button class="pin-key" onclick="pinPress('5')">5</button>
+            <button class="pin-key" onclick="pinPress('6')">6</button>
+            <button class="pin-key" onclick="pinPress('7')">7</button>
+            <button class="pin-key" onclick="pinPress('8')">8</button>
+            <button class="pin-key" onclick="pinPress('9')">9</button>
+            <button class="pin-key del" onclick="pinDel()">DEL</button>
+            <button class="pin-key" onclick="pinPress('0')">0</button>
+            <button class="pin-key del" onclick="pinClear()">CLR</button>
+          </div>
+          <div class="pin-error" id="pin-error"></div>
+        </div>
+      </div>
+      <div class="secret-content" id="secret-content">
+        Una sorpresa te espera<br>detrás de esta puerta.<br><br>
+        Gracias por existir, amor.<br>
+        Feliz cumpleaños.
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-block reveal r5">
+      <div class="cd-label">Cuenta regresiva para tu velada</div>
+      <div class="cd-numbers">
+        <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-unitlabel">días</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-unitlabel">horas</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-unitlabel">min</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-unitlabel">seg</span></div>
+      </div>
+      <div class="cd-sub" id="cd-sub">Para la mejor noche del año</div>
+    </div>
+
+    <!-- RSVP -->
+    <div class="rsvp-section reveal r5">
+      <div class="rsvp-label">¿Aceptas?</div>
+      <button class="rsvp-btn" id="rsvp-btn" onclick="confirmRSVP()">
+        <span id="rsvp-text">ALLÁ ESTARÉ ♥</span>
+      </button>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="quote-block reveal r6">
+      <div class="quote-text">"Contigo, cualquier noche tiene algo especial."</div>
+      <div class="quote-from">Tu amor, siempre</div>
+    </div>
+
+    <div class="paper-footer reveal r6">
+      <div class="pf-col">Edición especial<br>cumpleaños</div>
+      <div class="pf-col" style="text-align:center">Mayo 2026</div>
+      <div class="pf-col" style="text-align:right">Con todo<br>mi amor</div>
+    </div>
+  </div>
+
+  <div class="card-bottom reveal r6">
+    <div class="card-bottom-text">Feliz cumpleaños, Laura &nbsp;✦&nbsp; 29 años de ser extraordinaria</div>
+  </div>
+</div>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; });
+
+// Parallax
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 12;
+  const y = (e.clientY / window.innerHeight - 0.5) * 12;
+  document.getElementById('bg-layer').style.transform = `translate(${x}px, ${y}px)`;
+});
+
+// Petal rain
+const canvas = document.getElementById('petals');
+const ctx = canvas.getContext('2d');
+function resizePetals() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizePetals(); window.addEventListener('resize', resizePetals);
+const petals = Array.from({length: 28}, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: Math.random() * 5 + 3, speed: Math.random() * 0.5 + 0.2, drift: (Math.random() - 0.5) * 0.35, rot: Math.random() * Math.PI * 2, rotS: (Math.random() - 0.5) * 0.025, op: Math.random() * 0.3 + 0.08, h: 345 + Math.floor(Math.random() * 25) }));
+function animPetals() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  petals.forEach(p => {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = p.op;
+    ctx.fillStyle = `hsl(${p.h}, 50%, 72%)`; ctx.beginPath(); ctx.ellipse(0, 0, p.r, p.r * 0.45, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    p.y += p.speed; p.x += p.drift; p.rot += p.rotS;
+    if (p.y > canvas.height + 10) { p.y = -10; p.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(animPetals);
+}
+animPetals();
+
+// Envelope open — fixed alignment
+let envOpened = false;
+function openEnvelope() {
+  if (envOpened) return;
+  envOpened = true;
+  document.getElementById('env-flap-layer').classList.add('open');
+  setTimeout(() => {
+    const envScreen = document.getElementById('env-screen');
+    envScreen.style.opacity = '0';
+    envScreen.style.transform = 'translateY(-30px)';
+    setTimeout(() => {
+      envScreen.style.display = 'none';
+      const card = document.getElementById('card');
+      card.style.display = 'block';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        card.classList.add('show');
+        observeReveal();
+      }));
+    }, 750);
+  }, 950);
+}
+
+function observeReveal() {
+  const els = document.querySelectorAll('.reveal');
+  els.forEach((el, i) => { if (i < 5) el.classList.add('in'); });
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  els.forEach((el, i) => { if (i >= 5) io.observe(el); });
+}
+
+// Countdown
+function updateCD() {
+  const diff = new Date('2026-05-09T16:00:00') - new Date();
+  if (diff <= 0) { ['d','h','m','s'].forEach(id => document.getElementById('cd-'+id).textContent = '00'); document.getElementById('cd-sub').textContent = '¡Es hoy, amor!'; return; }
+  document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+}
+updateCD(); setInterval(updateCD, 1000);
+
+// ICS
+function downloadICS() {
+  const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Cena Laura//ES\nBEGIN:VEVENT\nDTSTART:20260509T160000\nDTEND:20260509T210000\nSUMMARY:Una velada para los dos\nDESCRIPTION:Una velada para los dos. Te amo mi amor ❤️\nLOCATION:Reservado\nEND:VEVENT\nEND:VCALENDAR`;
+  const blob = new Blob([ics], {type: 'text/calendar;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'cena-especial-laura.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// PIN code
+let pinValue = '';
+const correctPin = '2319';
+function updateDots() {
+  for (let i = 0; i < 4; i++) document.getElementById('dot-' + i).classList.toggle('filled', i < pinValue.length);
+}
+function pinPress(d) {
+  if (pinValue.length >= 4) return;
+  pinValue += d;
+  updateDots();
+  document.getElementById('pin-error').textContent = '';
+  if (pinValue.length === 4) {
+    setTimeout(() => {
+      if (pinValue === correctPin) {
+        document.getElementById('secret-locked').style.display = 'none';
+        document.getElementById('secret-content').classList.add('revealed');
+        launchConfetti(true);
+      } else {
+        document.getElementById('pin-error').textContent = 'Código incorrecto. Inténtalo de nuevo.';
+        pinValue = ''; updateDots();
+      }
+    }, 300);
+  }
+}
+function pinDel() { pinValue = pinValue.slice(0, -1); updateDots(); document.getElementById('pin-error').textContent = ''; }
+function pinClear() { pinValue = ''; updateDots(); document.getElementById('pin-error').textContent = ''; }
+
+// RSVP
+let rsvpDone = false;
+function confirmRSVP() {
+  if (rsvpDone) return; rsvpDone = true;
+  const btn = document.getElementById('rsvp-btn'); btn.classList.add('confirmed');
+  document.getElementById('rsvp-text').textContent = '¡Allá estaré! ♥';
+  launchConfetti(false);
+}
+
+function launchConfetti(gentle) {
+  const colors = gentle ? ['#c4756a','#e8b4ae','#f0d8d4','#b8945a'] : ['#c4756a','#e8b4ae','#5c1a28','#b8945a','#d4b07a','#f0d8d4'];
+  const count = gentle ? 30 : 80;
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div'); c.className = 'confetti-piece';
+      c.style.left = (15 + Math.random() * 70) + 'vw'; c.style.top = '25vh';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.width = (4 + Math.random() * 8) + 'px'; c.style.height = (4 + Math.random() * 8) + 'px';
+      c.style.setProperty('--sy', '-60px'); c.style.setProperty('--sx', (Math.random() - 0.5) * 200 + 'px');
+      document.body.appendChild(c); setTimeout(() => c.remove(), 2200);
+    }, i * 22);
+  }
+}
+</script>
+</body>
+</html>
