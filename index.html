@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viaje Familiar Reyes 2027</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap');
 
 :root {
   --ink:     #0F1E2E;
@@ -25,17 +25,19 @@
   --blue-bg: #E8F0FB;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family:'Inter',system-ui,sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; }
+body { font-family:'Plus Jakarta Sans',system-ui,sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; }
 
 /* HEADER */
 .site-header {
   background: linear-gradient(160deg, var(--ink) 0%, var(--navy) 60%, var(--steel) 100%);
-  padding: 44px 20px 36px; text-align:center; position:relative; overflow:hidden;
+  padding: 40px 20px 0; text-align:center; position:relative; overflow:hidden;
 }
 .site-header::before { content:''; position:absolute; inset:0;
   background: radial-gradient(ellipse at 70% 0%, rgba(74,144,217,0.18) 0%, transparent 60%); pointer-events:none; }
-.header-eyebrow { font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:var(--sky); font-weight:600; margin-bottom:10px; }
-.header-title { font-family:'DM Serif Display',Georgia,serif; font-size:clamp(1.8rem,5vw,2.8rem); color:var(--white); line-height:1.1; margin-bottom:8px; }
+.header-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; }
+.header-illustration { width:100%; max-width:280px; margin:0 auto 6px; display:block; }
+.header-eyebrow { font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; color:var(--sky); font-weight:700; margin-bottom:10px; }
+.header-title { font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:600; font-size:clamp(1.9rem,5.5vw,3.1rem); color:var(--white); line-height:1.12; margin-bottom:8px; letter-spacing:-0.5px; }
 .header-sub { color:rgba(255,255,255,0.65); font-size:0.88rem; margin-bottom:16px; }
 .header-pill { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.1);
   border:1px solid rgba(255,255,255,0.2); border-radius:40px; padding:6px 16px; color:rgba(255,255,255,0.85); font-size:0.8rem; margin-bottom: 18px;}
@@ -43,7 +45,7 @@ body { font-family:'Inter',system-ui,sans-serif; background:var(--paper); color:
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
 /* COUNTDOWN */
-.countdown { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.countdown { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding-bottom:34px; }
 .cd-box { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
   border-radius:10px; padding:10px 14px; min-width:64px; text-align:center; }
 .cd-num { font-size:1.5rem; font-weight:700; color:var(--white); line-height:1; }
@@ -55,7 +57,9 @@ body { font-family:'Inter',system-ui,sans-serif; background:var(--paper); color:
 .view-toggle { display:flex; gap:6px; background:var(--white); border:1px solid var(--border);
   border-radius:10px; padding:4px; margin-bottom:24px; max-width:360px; }
 .view-toggle button { flex:1; padding:9px 12px; border:none; background:none; border-radius:7px;
-  font-family:inherit; font-size:0.82rem; font-weight:600; color:#7A92A8; cursor:pointer; transition:all 0.15s; }
+  font-family:inherit; font-size:0.82rem; font-weight:600; color:#7A92A8; cursor:pointer; transition:all 0.15s;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.icon-inline { flex-shrink:0; vertical-align:-3px; }
 .view-toggle button.active { background:var(--navy); color:white; }
 
 /* KPI */
@@ -78,7 +82,7 @@ body { font-family:'Inter',system-ui,sans-serif; background:var(--paper); color:
 .next-cuota { background:linear-gradient(135deg, var(--mist), var(--blue-bg)); border:1px solid var(--border);
   border-radius:12px; padding:16px 20px; margin-bottom:26px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
 .next-cuota-left { display:flex; align-items:center; gap:12px; }
-.next-cuota-icon { font-size:1.8rem; }
+.next-cuota-icon { font-size:1.8rem; display:flex; align-items:center; justify-content:center; width:40px; height:40px; background:var(--white); border-radius:10px; flex-shrink:0; }
 .next-cuota-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--steel); font-weight:700; }
 .next-cuota-date { font-size:1.05rem; font-weight:700; color:var(--navy); }
 .next-cuota-amt { font-size:0.95rem; font-weight:700; color:var(--sky); background:white; padding:8px 16px; border-radius:8px; border:1px solid var(--border); }
@@ -140,7 +144,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
 /* ADMIN TRIGGER */
 .admin-trigger { position:fixed; bottom:22px; right:22px; width:48px; height:48px; border-radius:50%;
   background:var(--ink); color:white; border:none; cursor:pointer; display:flex; align-items:center;
-  justify-content:center; box-shadow:0 4px 16px rgba(15,30,46,0.3); font-size:1.2rem; transition:all .2s; z-index:100; }
+  justify-content:center; box-shadow:0 4px 16px rgba(15,30,46,0.3); transition:all .2s; z-index:100; }
 .admin-trigger:hover { transform:scale(1.1); background:var(--navy); }
 
 .overlay { display:none; position:fixed; inset:0; background:rgba(10,20,35,0.6); backdrop-filter:blur(4px);
@@ -169,7 +173,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
 .form-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:11px; }
 
 .btn { padding:9px 18px; border-radius:8px; font-weight:600; font-size:0.84rem; cursor:pointer; border:none;
-  transition:opacity .15s, transform .1s; font-family:inherit; }
+  transition:opacity .15s, transform .1s; font-family:inherit; display:inline-flex; align-items:center; gap:6px; }
 .btn:hover{opacity:0.88} .btn:active{transform:scale(0.98)}
 .btn-primary{background:var(--navy);color:white} .btn-danger{background:var(--red);color:white}
 .btn-ghost{background:var(--mist);color:var(--navy);border:1px solid var(--border)} .btn-green{background:var(--green);color:white}
@@ -234,18 +238,41 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
 <body>
 
 <header class="site-header">
-  <div class="header-eyebrow">Organización Familiar</div>
-  <h1 class="header-title">Viaje Reyes 2027</h1>
-  <p class="header-sub">Apulo · 9 al 11 de enero de 2027 · 2 noches · 3 días</p>
-  <div class="header-pill"><span class="dot"></span>Estado de pagos · Actualización en tiempo real</div>
-  <div class="countdown" id="countdown"></div>
+  <div class="header-inner">
+    <svg class="header-illustration" viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="160" cy="142" rx="120" ry="10" fill="rgba(255,255,255,0.06)"/>
+      <circle cx="252" cy="42" r="26" fill="#FBC95A"/>
+      <circle cx="252" cy="42" r="26" fill="url(#sunGrad)" opacity="0.5"/>
+      <path d="M40 130c0-38 24-66 58-66 28 0 50 18 56 44" stroke="rgba(255,255,255,0.35)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M98 64c-4-18 6-34 22-34 14 0 22 10 24 22" stroke="#3FAE6B" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M98 64c8-14 22-22 36-18" stroke="#3FAE6B" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M98 64c-2-16-16-26-30-22" stroke="#2C8F58" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <rect x="150" y="92" width="44" height="38" rx="6" fill="#EAF2FB"/>
+      <rect x="150" y="92" width="44" height="10" rx="4" fill="#4A90D9"/>
+      <rect x="166" y="80" width="12" height="14" rx="3" fill="#EAF2FB"/>
+      <rect x="207" y="100" width="30" height="30" rx="6" fill="#FBC95A"/>
+      <rect x="207" y="100" width="30" height="8" rx="3" fill="#C07A00"/>
+      <path d="M30 120c30 14 230 14 260 0" stroke="rgba(255,255,255,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <defs>
+        <radialGradient id="sunGrad" cx="0" cy="0" r="1" gradientTransform="translate(252 42) scale(26)" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#FFE3A0"/>
+          <stop offset="1" stop-color="#FBC95A" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+    </svg>
+    <div class="header-eyebrow">Organización Familiar</div>
+    <h1 class="header-title">Viaje Reyes 2027</h1>
+    <p class="header-sub">Apulo · 9 al 11 de enero de 2027 · 2 noches · 3 días</p>
+    <div class="header-pill"><span class="dot"></span>Estado de pagos · Actualización en tiempo real</div>
+    <div class="countdown" id="countdown"></div>
+  </div>
 </header>
 
 <main class="page">
 
   <div class="view-toggle">
-    <button class="active" id="btn-view-personas" onclick="setView('personas')">👤 Por persona</button>
-    <button id="btn-view-familias" onclick="setView('familias')">👨‍👩‍👧 Por familia</button>
+    <button class="active" id="btn-view-personas" onclick="setView('personas')"><svg class="icon-inline" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg> Por persona</button>
+    <button id="btn-view-familias" onclick="setView('familias')"><svg class="icon-inline" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><path d="M15 14.5c2.5 0 4.5 1.8 4.5 4.2V21"/></svg> Por familia</button>
   </div>
 
   <div class="kpi-strip">
@@ -258,7 +285,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
   </div>
 
   <div class="progress-card">
-    <div class="progress-header"><span>📊 Progreso de recaudo</span><span id="pct-label" style="color:var(--sky);font-weight:700">0%</span></div>
+    <div class="progress-header"><span><svg class="icon-inline" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Progreso de recaudo</span><span id="pct-label" style="color:var(--sky);font-weight:700">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
 
@@ -295,11 +322,13 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
   </div>
 
   <div class="notice">
-    💚 <strong>Transparencia total.</strong> Todo el dinero recaudado se destina exclusivamente al viaje.
+    <svg class="icon-inline" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+    <strong>Transparencia total.</strong> Todo el dinero recaudado se destina exclusivamente al viaje.
     Cada gasto tiene soporte. Al finalizar se publicará el cierre financiero completo. Si el costo real
     resulta menor al proyectado, la diferencia se devuelve o descuenta de la última cuota.
     <br><br>
-    📌 <strong>Incluye:</strong> Hospedaje (2 noches) + Alimentación (3 días) + Contingencias.
+    <svg class="icon-inline" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.8 5.8 21l1.2-7L2 9.3l7-1L12 2l3 6.3 7 1-5 4.7 1.2 7Z"/></svg>
+    <strong>Incluye:</strong> Hospedaje (2 noches) + Alimentación (3 días) + Contingencias.
     &nbsp;|&nbsp; <strong>No incluye:</strong> Transporte · Bebidas alcohólicas.
   </div>
 
@@ -310,14 +339,14 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
   Última actualización: <strong id="last-update">—</strong>
 </footer>
 
-<button class="admin-trigger" onclick="openAdmin()" title="Administrar">⚙️</button>
+<button class="admin-trigger" onclick="openAdmin()" title="Administrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></button>
 <div class="toast" id="toast"></div>
 
 <div class="overlay" id="admin-overlay" onclick="overlayClick(event)">
   <div class="modal">
 
     <div id="pwd-screen">
-      <div class="modal-header"><h2>🔐 Acceso Administrador</h2><button class="modal-close" onclick="closeAdmin()">×</button></div>
+      <div class="modal-header"><h2 style="display:flex;align-items:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Acceso Administrador</h2><button class="modal-close" onclick="closeAdmin()">×</button></div>
       <div class="modal-body">
         <div class="form-group">
           <label class="form-label">Contraseña</label>
@@ -330,7 +359,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
     </div>
 
     <div id="admin-panel" style="display:none">
-      <div class="modal-header"><h2>⚙️ Panel de Administración</h2><button class="modal-close" onclick="closeAdmin()">×</button></div>
+      <div class="modal-header"><h2 style="display:flex;align-items:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg> Panel de Administración</h2><button class="modal-close" onclick="closeAdmin()">×</button></div>
       <div class="modal-body">
 
         <div class="tabs">
@@ -368,7 +397,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
             <div class="form-group"><label class="form-label">Comprobante / Nota</label><input class="form-input" type="text" id="pago-comprobante" placeholder="Opcional"></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-green" onclick="registrarPago()">✓ Registrar pago</button>
+            <button class="btn btn-green" onclick="registrarPago()"><svg class="icon-inline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Registrar pago</button>
             <button class="btn btn-ghost" onclick="limpiarForm()">Limpiar</button>
           </div>
 
@@ -408,7 +437,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
           </div>
           <div id="fam-split-preview" style="margin:14px 0"></div>
           <div class="btn-row">
-            <button class="btn btn-green" onclick="registrarPagoFamilia()">✓ Registrar y repartir</button>
+            <button class="btn btn-green" onclick="registrarPagoFamilia()"><svg class="icon-inline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Registrar y repartir</button>
           </div>
         </div>
 
@@ -422,7 +451,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
         <div class="tab-pane" id="tab-historial">
           <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
             <span style="font-size:0.8rem;color:var(--steel);font-weight:600"><span id="hist-count">0</span> pagos registrados</span>
-            <button class="btn btn-danger btn-sm" onclick="confirmarBorrarTodo()">🗑 Borrar todo</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmarBorrarTodo()"><svg class="icon-inline" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Borrar todo</button>
           </div>
           <div style="overflow-x:auto"><table class="hist-table">
             <thead><tr><th>Fecha</th><th>Persona</th><th>Cuota</th><th>Valor</th><th>Medio</th><th></th></tr></thead>
@@ -434,7 +463,7 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
         <div class="tab-pane" id="tab-personas">
           <div style="margin-bottom:14px">
             <p style="font-size:0.82rem;color:var(--steel);margin-bottom:10px">Edita nombres, familia o tipo. Agrega o elimina personas.</p>
-            <button class="btn btn-primary btn-sm" onclick="abrirNuevaPersona()">+ Agregar persona</button>
+            <button class="btn btn-primary btn-sm" onclick="abrirNuevaPersona()"><svg class="icon-inline" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg> Agregar persona</button>
           </div>
           <div style="overflow-x:auto"><table class="hist-table" id="personas-edit-table">
             <thead><tr><th>Nombre</th><th>Familia</th><th>Tipo</th><th>Nota</th><th></th></tr></thead>
@@ -448,8 +477,8 @@ tfoot td { background:var(--ink); color:white; padding:11px 14px; font-size:0.84
             Exporta los datos para backup. Importa para restaurar en otro dispositivo.
           </p>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="exportarDatos()">⬇ Exportar JSON</button>
-            <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">⬆ Importar JSON</button>
+            <button class="btn btn-primary" onclick="exportarDatos()"><svg class="icon-inline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg> Exportar JSON</button>
+            <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()"><svg class="icon-inline" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="m7 13 5-5 5 5"/><path d="M5 3h14"/></svg> Importar JSON</button>
             <input type="file" id="import-file" accept=".json" onchange="importarDatos(event)" style="display:none">
           </div>
           <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border)">
@@ -575,7 +604,7 @@ function estadoPersona(p){
   if(p.tipo==="gratis") return {label:"Sin costo",cls:"badge-sincosto"};
   const pagado=pagadoPorPersona(p.id);
   if(pagado<=0) return {label:"Pendiente",cls:"badge-pendiente"};
-  if(pagado>=TOTAL_PP) return {label:"Al día ✓",cls:"badge-aldia"};
+  if(pagado>=TOTAL_PP) return {label:"Al día",cls:"badge-aldia"};
   return {label:"Parcial",cls:"badge-parcial"};
 }
 function cuotasAtrasadas(p){
@@ -594,7 +623,7 @@ function renderCountdown(){
   const now = new Date();
   const diff = VIAJE_FECHA - now;
   const box = document.getElementById("countdown");
-  if(diff<=0){ box.innerHTML = `<div class="cd-box"><div class="cd-num">🎉</div><div class="cd-lbl">¡Es hoy!</div></div>`; return; }
+  if(diff<=0){ box.innerHTML = `<div class="cd-box"><div class="cd-num"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.8"/><path d="m4 3 3 3"/><path d="m12 7-1.8 1.8"/><path d="M18 5l-1.5 1.5"/><path d="M22 9l-1.5 1.5"/><path d="M9.5 14.5 14 10"/><path d="M19.4 5.8c1.1 1.1 1.1 3 0 4.1l-7.5 7.5-4.1-4.1 7.5-7.5c1.1-1.1 3-1.1 4.1 0Z"/></svg></div><div class="cd-lbl">¡Es hoy!</div></div>`; return; }
   const d = Math.floor(diff/(1000*60*60*24));
   const h = Math.floor((diff/(1000*60*60))%24);
   const m = Math.floor((diff/(1000*60))%60);
@@ -613,7 +642,7 @@ function renderNextCuota(){
   const esp = proxima.valor * nPagan();
   box.innerHTML = `
     <div class="next-cuota-left">
-      <div class="next-cuota-icon">⏰</div>
+      <div class="next-cuota-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--steel)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
       <div><div class="next-cuota-title">Próxima cuota</div><div class="next-cuota-date">${proxima.label} · ${proxima.fecha}</div></div>
     </div>
     <div class="next-cuota-amt">${fmt(proxima.valor)} / persona</div>`;
@@ -643,7 +672,7 @@ function renderCuotas(){
   CUOTAS_DEF.forEach(c=>{
     const esp=c.valor*nPagan(); const rec=cuotaRecaudada(c.num); totEsp+=esp; totRec+=rec;
     const pct = esp>0?rec/esp:0; let badge;
-    if(rec>=esp) badge=`<span class="badge badge-aldia">Completa ✓</span>`;
+    if(rec>=esp) badge=`<span class="badge badge-aldia">Completa <svg class="icon-inline" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>`;
     else if(rec>0) badge=`<span class="badge badge-parcial">En curso ${(pct*100).toFixed(0)}%</span>`;
     else badge=`<span class="badge badge-pendiente">Pendiente</span>`;
     tbody.innerHTML+=`<tr><td><strong>${c.label}</strong></td><td>${c.fecha}</td><td>${fmt(c.valor)}</td>
@@ -686,7 +715,7 @@ function renderFamilias(){
     card.className="familia-card"; card.id=`fam-card-${idx}`;
     card.innerHTML=`
       <div class="familia-header" onclick="toggleFamilia(${idx})">
-        <div class="familia-name">👨‍👩‍👧 ${nuc} <span style="color:#9EB3C8;font-weight:400;font-size:0.78rem">(${miembros.length})</span></div>
+        <div class="familia-name"><svg class="icon-inline" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><path d="M15 14.5c2.5 0 4.5 1.8 4.5 4.2V21"/></svg> ${nuc} <span style="color:#9EB3C8;font-weight:400;font-size:0.78rem">(${miembros.length})</span></div>
         <div class="familia-stats">
           <div class="familia-progress-mini"><div class="familia-progress-mini-fill" style="width:${Math.min(pct*100,100)}%"></div></div>
           <span style="font-size:0.78rem;color:var(--steel);font-weight:600">${fmt(rec)} / ${fmt(esp)}</span>
@@ -783,7 +812,7 @@ function registrarPago(){
   pagos.push({id:Date.now(),personaId:pid,cuotaNum:cnum||0,valor,fecha,medio,comprobante:comp});
   savePagos(); limpiarForm();
   const persona=personas.find(p=>p.id===pid);
-  toast(`✓ Pago de ${fmt(valor)} registrado para ${persona.nombre}`,"ok");
+  toast(`Pago de ${fmt(valor)} registrado para ${persona.nombre}`,"ok");
   renderQuickpay();
 }
 function limpiarForm(){ document.getElementById("pago-valor").value=""; document.getElementById("pago-comprobante").value=""; }
@@ -796,7 +825,7 @@ function renderQuickpay(){
     const paid = pagadoCuota(pid,c.num)>=c.valor;
     const chip=document.createElement("div");
     chip.className=`quickpay-chip ${paid?'is-paid':''}`;
-    chip.innerHTML = `${c.label}<br><span style="font-size:0.7rem;opacity:0.8">${fmt(c.valor)}</span>${paid?' ✓':''}`;
+    chip.innerHTML = `${c.label}<br><span style="font-size:0.7rem;opacity:0.8">${fmt(c.valor)}</span>${paid?' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M20 6 9 17l-5-5"/></svg>':''}`;
     chip.onclick=()=>quickMarkPaid(pid,c);
     grid.appendChild(chip);
   });
@@ -809,7 +838,7 @@ function quickMarkPaid(pid,cuota){
     fecha:new Date().toISOString().split("T")[0],medio:"Otro",comprobante:"Pago rápido"});
   savePagos();
   const persona=personas.find(p=>p.id===pid);
-  toast(`✓ ${cuota.label} marcada como pagada para ${persona.nombre}`,"ok");
+  toast(`${cuota.label} marcada como pagada para ${persona.nombre}`,"ok");
   renderQuickpay();
 }
 
@@ -845,7 +874,7 @@ function registrarPagoFamilia(){
   });
   savePagos();
   document.getElementById("fam-valor").value="";
-  toast(`✓ ${fmt(valor)} repartido entre ${miembros.length} persona(s) de ${nuc}`,"ok");
+  toast(`${fmt(valor)} repartido entre ${miembros.length} persona(s) de ${nuc}`,"ok");
   renderFamSplit();
 }
 
@@ -854,7 +883,7 @@ function renderMorosos(){
   const list=document.getElementById("morosos-list");
   const data = pagan().map(p=>({p, atraso:cuotasAtrasadas(p), saldo:TOTAL_PP-pagadoPorPersona(p.id)}))
     .filter(x=>x.saldo>0).sort((a,b)=>b.atraso-a.atraso || b.saldo-a.saldo);
-  if(data.length===0){ list.innerHTML=`<div class="empty-state">🎉 Nadie está en mora. ¡Todos al día!</div>`; return; }
+  if(data.length===0){ list.innerHTML=`<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:6px"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg><br>Nadie está en mora. ¡Todos al día!</div>`; return; }
   list.innerHTML = data.map(({p,atraso,saldo})=>{
     let tagCls="badge-parcial", tagTxt=`${atraso} cuota(s) atrasada(s)`;
     if(atraso===0){ tagCls="badge-sincosto"; tagTxt="Al día con el calendario"; }
@@ -875,7 +904,7 @@ function renderHistorial(){
     const persona=personas.find(x=>x.id===p.personaId); const cuota=CUOTAS_DEF.find(c=>c.num===p.cuotaNum);
     tbody.innerHTML+=`<tr><td>${p.fecha}</td><td style="font-weight:600">${persona?persona.nombre:"?"}</td>
       <td>${cuota?cuota.label:"Abono libre"}</td><td style="color:var(--green);font-weight:600">${fmt(p.valor)}</td>
-      <td style="color:#7A92A8">${p.medio}</td><td><button class="del-btn" onclick="eliminarPago(${p.id})" title="Eliminar">🗑</button></td></tr>`;
+      <td style="color:#7A92A8">${p.medio}</td><td><button class="del-btn" onclick="eliminarPago(${p.id})" title="Eliminar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></td></tr>`;
   });
 }
 function eliminarPago(id){ if(!confirm("¿Eliminar este pago? No se puede deshacer.")) return; pagos=pagos.filter(p=>p.id!==id); savePagos(); toast("Pago eliminado.","ok"); }
@@ -893,7 +922,7 @@ function renderPersonasEdit(){
       <td style="font-weight:600">${p.nombre}</td><td>${p.nucleo}</td>
       <td>${p.tipo==="paga"?"Paga":"Sin costo"}</td>
       <td style="color:#9EB3C8;font-size:0.78rem">${p.nota||"—"}</td>
-      <td><button class="edit-btn" onclick="abrirEditarPersona(${p.id})" title="Editar">✏️</button></td>
+      <td><button class="edit-btn" onclick="abrirEditarPersona(${p.id})" title="Editar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button></td>
     </tr>`;
   });
 }
@@ -934,7 +963,7 @@ function guardarPersona(){
   }
   savePersonas();
   document.getElementById("person-overlay").classList.remove("open");
-  toast("✓ Persona guardada","ok");
+  toast("Persona guardada","ok");
 }
 function eliminarPersona(){
   const idVal=parseInt(document.getElementById("edit-person-id").value);
@@ -953,7 +982,7 @@ function exportarDatos(){
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
   a.download=`reyes2027_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
-  toast("Backup exportado ✓","ok");
+  toast("Backup exportado","ok");
 }
 function importarDatos(event){
   const file=event.target.files[0]; if(!file) return;
@@ -967,7 +996,7 @@ function importarDatos(event){
       pagos=data.pagos;
       if(Array.isArray(data.personas)) personas=data.personas;
       savePersonas(); savePagos();
-      toast(`Importado ✓`,"ok");
+      toast(`Importado`,"ok");
     }catch(err){ toast("Archivo inválido.","err"); }
   };
   reader.readAsText(file); event.target.value="";
@@ -978,7 +1007,7 @@ function cambiarPwd(){
   if(p1!==p2){ toast("Las contraseñas no coinciden.","err"); return; }
   localStorage.setItem(LS_PWD,p1);
   document.getElementById("new-pwd").value=""; document.getElementById("new-pwd2").value="";
-  toast("Contraseña actualizada ✓","ok");
+  toast("Contraseña actualizada","ok");
 }
 
 // ═══════════════════════════════ TABS / TOAST ═══════════════════════════════
@@ -991,7 +1020,12 @@ function switchTab(id,btn){
   if(id==="tab-personas") renderPersonasEdit();
 }
 function toast(msg,type="ok"){
-  const t=document.getElementById("toast"); t.textContent=msg; t.className=`toast ${type} show`;
+  const t=document.getElementById("toast");
+  const icon = type==="ok"
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 6 9 17l-5-5"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>';
+  t.innerHTML = `<span style="display:flex;align-items:center;gap:8px">${icon}<span>${msg}</span></span>`;
+  t.className=`toast ${type} show`;
   clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove("show"),3200);
 }
 
